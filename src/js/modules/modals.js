@@ -1,9 +1,11 @@
-const modals = (triggerSelector, modalSelector, closeSelector) =>{
+
+const modals = (triggerSelector, modalSelector, closeSelector, windowsSelector, closeClickOverlay = true) =>{
 
     const bindModal = () => {
         const trigger = document.querySelectorAll(triggerSelector),
               modal = document.querySelector(modalSelector),
-              close = document.querySelector(closeSelector)
+              close = document.querySelector(closeSelector),
+              windows = document.querySelectorAll(windowsSelector)
 
         const showModal = (modal) => {
             modal.style.display = 'block'
@@ -17,23 +19,33 @@ const modals = (triggerSelector, modalSelector, closeSelector) =>{
             // document.body.classList.remove('modal-open')
         }
 
+        const closeAllWindows = () =>{
+            windows.forEach(item =>{
+                item.style.display = 'none'
+            })
+        }
+
         trigger.forEach(element =>{
             element.addEventListener('click', (event)=>{
-                console.log(event.target)
+                // console.log(event.target)
                 if (event.target){
                     event.preventDefault()
                 }
+
+                closeAllWindows()
 
                 showModal(modal)
             })
         })
 
         close.addEventListener('click', ()=>{
+            closeAllWindows()
             hideModal(modal)
         })
 
         modal.addEventListener('click', (event)=>{
-            if (event.target === modal) {
+            if (event.target === modal && closeClickOverlay) {
+                closeAllWindows()
                 modal.style.display = 'none'
                 document.body.style.overflow = ''
                 // document.body.classList.remove('modal-open')

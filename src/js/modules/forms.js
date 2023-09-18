@@ -1,13 +1,13 @@
-const formsFunc = () => {
+import replaceLetters from "./replaceLetters";
+
+const formsFunc = (state) => {
     const forms = document.querySelectorAll('form'),
           inputs = document.querySelectorAll('input'),
           phoneInputs = document.querySelectorAll('input[name="user_phone"]')
 
-    phoneInputs.forEach(phoneInput =>{
-        phoneInput.addEventListener('input', ()=> {
-            phoneInput.value = phoneInput.value.replace(/\D/, '')
-        })
-    })
+    replaceLetters('input[name="user_phone"]')
+
+
 
     const message = {
         loading: 'loading...',
@@ -41,6 +41,11 @@ const formsFunc = () => {
             element.appendChild(statusMessage)
 
             const formData = new FormData(element)
+            if (element.getAttribute('data-calc') === 'end'){
+                for (let key in state){
+                    formData.append(key, state[key])
+                }
+            }
             const json = JSON.stringify(Object.fromEntries(formData.entries()))
 
             postData('http://localhost:3000/requests', json)
